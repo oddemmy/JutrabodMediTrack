@@ -1,16 +1,20 @@
 const admin = require('firebase-admin');
-const serviceAccount = require('../serviceAccountKey.json');
 const userTokenModel = require('../model/userToken.model');
 
-// Initialize Firebase Admin
-admin.initializeApp({
-  credential: admin.credential.cert(serviceAccount)
-});
+// Initialize Firebase Admin from environment variables
+if (!admin.apps.length) {
+  admin.initializeApp({
+    credential: admin.credential.cert({
+      projectId: process.env.FIREBASE_PROJECT_ID,
+      clientEmail: process.env.FIREBASE_CLIENT_EMAIL,
+      privateKey: process.env.FIREBASE_PRIVATE_KEY?.replace(/\\n/g, '\n'),
+    })
+  });
+}
 
 // Send notification to a specific user
 const sendNotificationToUser = async (userId, title, body, data = {}) => {
   try {
-    // Get user's FCM token
     const userToken = await userTokenModel.findOne({ userId });
     
     if (!userToken) {
@@ -19,11 +23,8 @@ const sendNotificationToUser = async (userId, title, body, data = {}) => {
     }
 
     const message = {
-      notification: {
-        title: title,
-        body: body
-      },
-      data: data,
+      notification: { title, body },
+      data,
       token: userToken.fcmToken
     };
 
@@ -33,7 +34,6 @@ const sendNotificationToUser = async (userId, title, body, data = {}) => {
   } catch (error) {
     console.error('Error sending notification:', error);
     
-    // If token is invalid, remove it from database
     if (error.code === 'messaging/invalid-registration-token' || 
         error.code === 'messaging/registration-token-not-registered') {
       await userTokenModel.deleteOne({ userId });
@@ -49,7 +49,6 @@ const sendNotificationToMultipleUsers = async (userIds, title, body, data = {}) 
   const promises = userIds.map(userId => 
     sendNotificationToUser(userId, title, body, data)
   );
-  
   return await Promise.all(promises);
 };
 
