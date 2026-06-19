@@ -43,7 +43,7 @@ if (!emailRegex.test(userDetail.email)) {
   return
 }
     setLoading(true)
-    axios.post("http://localhost:8007/user/signup", userDetail)
+    axios.post("https://jutrabod-backend.onrender.com", userDetail)
     .then((res) => {
       console.log(res);
       toast.success(res.data?.message)
