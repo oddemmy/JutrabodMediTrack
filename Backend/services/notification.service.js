@@ -1,8 +1,8 @@
 const admin = require('firebase-admin');
 const userTokenModel = require('../model/userToken.model');
 
-// Initialize Firebase Admin from environment variables
-if (!admin.apps.length) {
+// Only initialize Firebase if credentials are available
+if (!admin.apps.length && process.env.FIREBASE_PROJECT_ID) {
   admin.initializeApp({
     credential: admin.credential.cert({
       projectId: process.env.FIREBASE_PROJECT_ID,
@@ -12,11 +12,14 @@ if (!admin.apps.length) {
   });
 }
 
-// Send notification to a specific user
 const sendNotificationToUser = async (userId, title, body, data = {}) => {
   try {
+    if (!admin.apps.length) {
+      console.log('Firebase not configured, skipping notification');
+      return null;
+    }
+
     const userToken = await userTokenModel.findOne({ userId });
-    
     if (!userToken) {
       console.log(`No FCM token found for user ${userId}`);
       return null;
@@ -33,18 +36,14 @@ const sendNotificationToUser = async (userId, title, body, data = {}) => {
     return response;
   } catch (error) {
     console.error('Error sending notification:', error);
-    
     if (error.code === 'messaging/invalid-registration-token' || 
         error.code === 'messaging/registration-token-not-registered') {
       await userTokenModel.deleteOne({ userId });
-      console.log(`Removed invalid token for user ${userId}`);
     }
-    
     return null;
   }
 };
 
-// Send notification to multiple users
 const sendNotificationToMultipleUsers = async (userIds, title, body, data = {}) => {
   const promises = userIds.map(userId => 
     sendNotificationToUser(userId, title, body, data)
