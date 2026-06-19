@@ -92,8 +92,14 @@ const handleLogin = () => {
               change={handleInputChange}
               className="w-full px-4 py-3 bg-gray-700 border border-gray-600 text-white placeholder-gray-400 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent transition"
             />
+            {/* Forgot Password Link */}
+            <p
+              onClick={() => navigate("/forgot-password")}
+              className="text-right text-sm text-purple-400 hover:text-purple-300 cursor-pointer mt-2 transition"
+            >
+              Forgot Password?
+            </p>
           </div>
-
           {/* Login Button */}
           <Button
           onclick={handleLogin}
@@ -111,11 +117,11 @@ const handleLogin = () => {
         </div>
 
         {/* Social Login */}
-        <Button
-          text="Continue with Google"
-          style="w-full bg-gray-700 hover:bg-gray-600 border border-gray-600 text-white font-semibold py-3 rounded-lg transition duration-300"
-        />
-
+          <Button
+        text="Continue with Google"
+        onclick={() => window.location.href = "http://localhost:8007/user/auth/google"}
+        style="w-full bg-gray-700 hover:bg-gray-600 border border-gray-600 text-white font-semibold py-3 rounded-lg transition duration-300"
+      />
         {/* Link */}
         <p className="text-center mt-8 text-gray-400">
           Don't have an account?{' '}

@@ -1,12 +1,13 @@
+require("dotenv").config()
 const { startMedicationReminderJob } = require('./jobs/medicationReminder.job')
 const { startAppointmentReminderJob } = require('./jobs/appointmentReminder.job')
 const { startRefillReminderJob } = require('./jobs/refillReminder.job')
 const drugInteractionRouter = require("./route/drugInteraction.route")
 const familyMemberRouter = require("./route/familyMember.route")
+const passport = require("./services/passport")
 
 const express = require("express")
 const app = express()
-require("dotenv").config()
 
 const connect = require("./database/db.connect")
 
@@ -34,6 +35,7 @@ app.use("/symptoms", symptomRouter)
 app.use("/user-token", userTokenRouter) 
 app.use("/drug-interactions", drugInteractionRouter)
 app.use("/family-members", familyMemberRouter) 
+app.use(passport.initialize())
 
 // Start medication reminder cron job
 startMedicationReminderJob()

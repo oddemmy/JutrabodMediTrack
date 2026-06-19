@@ -150,6 +150,7 @@ if (!emailRegex.test(userDetail.email)) {
         {/* Social Login */}
         <Button
           text="Continue with Google"
+          onclick={() => window.location.href = "http://localhost:8007/user/auth/google"}
           style="w-full bg-gray-700 hover:bg-gray-600 border border-gray-600 text-white font-semibold py-3 rounded-lg transition duration-300"
         />
 
