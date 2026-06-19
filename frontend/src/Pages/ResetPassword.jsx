@@ -29,7 +29,8 @@ const ResetPassword = () => {
 
     const token = searchParams.get("token");
     try {
-      await axios.post(`http://localhost:8007/user/reset-password?token=${token}`, { password });
+      await axios.post(`https://jutrabod-backend.onrender.com/user/reset-password?token=${token}`, { password });
+
       setStatus("success");
     } catch (err) {
       setError(err.response?.data?.message || "Something went wrong. Try again.");
