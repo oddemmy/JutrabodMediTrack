@@ -13,7 +13,8 @@ const VerifyEmail = () => {
     hasRun.current = true;
 
     const token = searchParams.get("token");
-    axios.get(`http://localhost:8007/user/verify-email?token=${token}`)
+   axios.get(`https://jutrabod-backend.onrender.com/user/verify-email?token=${token}`)
+
       .then(res => setStatus("success"))
       .catch(err => setStatus("error"));
   }, []);
