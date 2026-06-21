@@ -1,6 +1,6 @@
 import { useState } from 'react'
 import './App.css'
-import { Route, Routes } from 'react-router-dom'
+import { Route, Routes, Navigate } from 'react-router-dom'
 import Signup from './Pages/Signup'
 import { ToastContainer } from 'react-toastify'
 import Login from './Pages/Login'
@@ -25,6 +25,7 @@ function App() {
   return (
     <>
       <Routes>
+        <Route path='/' element={<Navigate to="/login" />} />
         <Route path='/signup' element={<Signup />} />
         <Route path='/login' element={<Login />} />
         <Route path='/verify-email' element={<VerifyEmail />} />
