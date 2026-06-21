@@ -26,7 +26,7 @@ const handleLogin = () => {
   }
 
   setLoading(true)
-  axios.post("https://jutrabod-backend.onrender.com", userDetail)
+  axios.post("https://jutrabod-backend.onrender.com/user/login", userDetail)
     .then((res) => {
   console.log(res)
   
@@ -119,7 +119,7 @@ const handleLogin = () => {
         {/* Social Login */}
           <Button
         text="Continue with Google"
-        onclick={() => window.location.href = "http://localhost:8007/user/auth/google"}
+        onclick={() => window.location.href = "https://jutrabod-backend.onrender.com/user/auth/google"}
         style="w-full bg-gray-700 hover:bg-gray-600 border border-gray-600 text-white font-semibold py-3 rounded-lg transition duration-300"
       />
         {/* Link */}
