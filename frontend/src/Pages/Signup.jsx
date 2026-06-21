@@ -43,7 +43,8 @@ if (!emailRegex.test(userDetail.email)) {
   return
 }
     setLoading(true)
-    axios.post("http://localhost:8007/user/signup", userDetail)
+    axios.post("https://jutrabod-backend.onrender.com/user/signup", userDetail)
+
     .then((res) => {
       console.log(res);
       toast.success(res.data?.message)
@@ -150,7 +151,7 @@ if (!emailRegex.test(userDetail.email)) {
         {/* Social Login */}
         <Button
           text="Continue with Google"
-          onclick={() => window.location.href = "http://localhost:8007/user/auth/google"}
+          onclick={() => window.location.href = "https://jutrabod-backend.onrender.com/user/auth/google"}
           style="w-full bg-gray-700 hover:bg-gray-600 border border-gray-600 text-white font-semibold py-3 rounded-lg transition duration-300"
         />
 

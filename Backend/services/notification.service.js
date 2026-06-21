@@ -1,29 +1,33 @@
 const admin = require('firebase-admin');
-const serviceAccount = require('../serviceAccountKey.json');
 const userTokenModel = require('../model/userToken.model');
 
-// Initialize Firebase Admin
-admin.initializeApp({
-  credential: admin.credential.cert(serviceAccount)
-});
+// Only initialize Firebase if credentials are available
+if (!admin.apps.length && process.env.FIREBASE_PROJECT_ID) {
+  admin.initializeApp({
+    credential: admin.credential.cert({
+      projectId: process.env.FIREBASE_PROJECT_ID,
+      clientEmail: process.env.FIREBASE_CLIENT_EMAIL,
+      privateKey: process.env.FIREBASE_PRIVATE_KEY?.replace(/\\n/g, '\n'),
+    })
+  });
+}
 
-// Send notification to a specific user
 const sendNotificationToUser = async (userId, title, body, data = {}) => {
   try {
-    // Get user's FCM token
+    if (!admin.apps.length) {
+      console.log('Firebase not configured, skipping notification');
+      return null;
+    }
+
     const userToken = await userTokenModel.findOne({ userId });
-    
     if (!userToken) {
       console.log(`No FCM token found for user ${userId}`);
       return null;
     }
 
     const message = {
-      notification: {
-        title: title,
-        body: body
-      },
-      data: data,
+      notification: { title, body },
+      data,
       token: userToken.fcmToken
     };
 
@@ -32,24 +36,18 @@ const sendNotificationToUser = async (userId, title, body, data = {}) => {
     return response;
   } catch (error) {
     console.error('Error sending notification:', error);
-    
-    // If token is invalid, remove it from database
     if (error.code === 'messaging/invalid-registration-token' || 
         error.code === 'messaging/registration-token-not-registered') {
       await userTokenModel.deleteOne({ userId });
-      console.log(`Removed invalid token for user ${userId}`);
     }
-    
     return null;
   }
 };
 
-// Send notification to multiple users
 const sendNotificationToMultipleUsers = async (userIds, title, body, data = {}) => {
   const promises = userIds.map(userId => 
     sendNotificationToUser(userId, title, body, data)
   );
-  
   return await Promise.all(promises);
 };
 

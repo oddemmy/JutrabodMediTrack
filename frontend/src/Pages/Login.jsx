@@ -26,7 +26,7 @@ const handleLogin = () => {
   }
 
   setLoading(true)
-  axios.post("http://localhost:8007/user/login", userDetail)
+  axios.post("https://jutrabod-backend.onrender.com", userDetail)
     .then((res) => {
   console.log(res)
   

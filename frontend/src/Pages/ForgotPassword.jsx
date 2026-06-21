@@ -16,7 +16,7 @@ const ForgotPassword = () => {
     setStatus("loading");
     setError("");
     try {
-      await axios.post("http://localhost:8007/user/forgot-password", { email });
+      await axios.post("https://jutrabod-backend.onrender.com", { email });
       setStatus("sent");
     } catch (err) {
       setError(err.response?.data?.message || "Something went wrong. Try again.");
