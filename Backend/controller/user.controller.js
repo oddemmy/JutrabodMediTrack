@@ -61,6 +61,10 @@ const userLogin = async(req, res) => {
             return res.status(403).json({message: "Please verify your email before logging in.", status: false})
         }
 
+        if (!existingUser.password) {
+            return res.status(400).json({message: "This account uses Google Sign-In. Please login with Google.", status: false})
+        }
+
         const hashedPassword = await bcrypt.compare(password, existingUser.password)
         if (!hashedPassword) {
             return res.status(400).json({message: "Invalid email or password", status: false})
@@ -97,13 +101,12 @@ const forgotPassword = async(req, res) => {
 
         const user = await usermodel.findOne({email})
         if (!user) {
-            // Don't reveal whether email exists or not for security
             return res.status(200).json({message: "If that email exists, a reset link has been sent.", status: true})
         }
 
         const token = crypto.randomBytes(32).toString("hex")
         user.resetPasswordToken = token
-        user.resetPasswordTokenExpiry = Date.now() + 60 * 60 * 1000 // 1 hour
+        user.resetPasswordTokenExpiry = Date.now() + 60 * 60 * 1000
         await user.save()
 
         await sendResetPasswordEmail(user.email, token)
