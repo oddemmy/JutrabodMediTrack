@@ -26,10 +26,14 @@ const userSignup = async(req, res) => {
             newuser.verificationTokenExpiry = Date.now() + 24 * 60 * 60 * 1000
             await newuser.save()
 
-            await sendVerificationEmail(newuser.email, token)
+    try {
+        await sendVerificationEmail(newuser.email, token)
+    } catch (emailError) {
+        console.log("Email sending failed:", emailError.message)
+    }
 
-            return res.status(200).json({message: "Signup successful. Please check your email to verify your account.", status: true})
-        }      
+    return res.status(200).json({message: "Signup successful. Please check your email to verify your account.", status: true})
+      }      
    } catch (error) {
          console.log(error);
          
