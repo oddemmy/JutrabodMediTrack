@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import axios from "axios";
+import axiosInstance from "../api/axiosInstance";
 
 const ForgotPassword = () => {
   const [email, setEmail] = useState("");
@@ -16,7 +16,7 @@ const ForgotPassword = () => {
     setStatus("loading");
     setError("");
     try {
-      await axios.post("https://jutrabod-backend.onrender.com", { email });
+      await axiosInstance.post("/user/forgot-password", { email });
       setStatus("sent");
     } catch (err) {
       setError(err.response?.data?.message || "Something went wrong. Try again.");

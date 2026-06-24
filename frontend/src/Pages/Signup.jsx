@@ -3,7 +3,7 @@ import Input from '../ui/Input'
 import Button from '../ui/Button'
 import {useNavigate} from "react-router-dom"
 import { useState } from 'react'
-import axios from "axios"
+import axiosInstance from "../api/axiosInstance"
 import {toast} from "react-toastify"
 
 const Signup = () => {
@@ -14,8 +14,9 @@ const Signup = () => {
     password: ""
   })
   const [confirmPassword, setConfirmPassword] = useState("")
-
   const [loading, setLoading] = useState(false)
+  const [emailSent, setEmailSent] = useState(false)
+  const [registeredEmail, setRegisteredEmail] = useState("")
   const handleInputChange = (e) => {
     console.log(e.target.name, e.target.value);
     const name = e.target.name
@@ -43,12 +44,13 @@ if (!emailRegex.test(userDetail.email)) {
   return
 }
     setLoading(true)
-    axios.post("https://jutrabod-backend.onrender.com/user/signup", userDetail)
+    axiosInstance.post("/user/signup", userDetail)
 
     .then((res) => {
       console.log(res);
+      setRegisteredEmail(userDetail.email)
+      setEmailSent(true)
       toast.success(res.data?.message)
-      navigate("/login")      
     }).catch((err) => {
       console.log(err);
       let errormessage = err?.response?.data?.message
@@ -57,6 +59,33 @@ if (!emailRegex.test(userDetail.email)) {
       setLoading(false)
     )
   }
+  // Show email confirmation screen after successful signup
+  if (emailSent) {
+    return (
+      <div className="min-h-screen bg-gradient-to-br from-gray-900 via-black to-gray-800 flex items-center justify-center px-4 py-8">
+        <div className="bg-gradient-to-b from-gray-800 to-gray-900 rounded-3xl shadow-2xl w-full max-w-md p-8 border border-gray-700 text-center">
+          <div className="text-6xl mb-4">📧</div>
+          <h1 className="text-3xl font-bold text-white mb-3">Check Your Email</h1>
+          <p className="text-gray-400 mb-2">
+            We sent a verification link to:
+          </p>
+          <p className="text-purple-400 font-semibold text-lg mb-6">{registeredEmail}</p>
+          <p className="text-gray-500 text-sm mb-8">
+            Click the link in the email to verify your account before logging in.
+            The link expires in 24 hours.
+          </p>
+          <button
+            onClick={() => navigate("/login")}
+            className="w-full bg-gradient-to-r from-purple-500 to-pink-500 hover:from-purple-600 hover:to-pink-600 text-white font-bold py-3 rounded-lg transition duration-300 shadow-lg hover:shadow-purple-500/50"
+          >
+            Go to Login
+          </button>
+          <p className="text-gray-600 text-xs mt-4">Didn't receive it? Check your spam folder.</p>
+        </div>
+      </div>
+    )
+  }
+
   return (
     <div className="min-h-screen bg-gradient-to-br from-gray-900 via-black to-gray-800 flex items-center justify-center px-4 py-8">
       <div className="bg-gradient-to-b from-gray-800 to-gray-900 rounded-3xl shadow-2xl w-full max-w-md p-8 border border-gray-700">
@@ -151,7 +180,7 @@ if (!emailRegex.test(userDetail.email)) {
         {/* Social Login */}
         <Button
           text="Continue with Google"
-          onclick={() => window.location.href = "https://jutrabod-backend.onrender.com/user/auth/google"}
+          onclick={() => window.location.href = `${import.meta.env.VITE_API_URL || "https://jutrabod-backend.onrender.com"}/user/auth/google`}
           style="w-full bg-gray-700 hover:bg-gray-600 border border-gray-600 text-white font-semibold py-3 rounded-lg transition duration-300"
         />
 

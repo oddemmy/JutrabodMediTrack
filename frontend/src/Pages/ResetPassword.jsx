@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { useSearchParams, useNavigate } from "react-router-dom";
-import axios from "axios";
+import axiosInstance from "../api/axiosInstance";
 
 const ResetPassword = () => {
   const [searchParams] = useSearchParams();
@@ -29,7 +29,7 @@ const ResetPassword = () => {
 
     const token = searchParams.get("token");
     try {
-      await axios.post(`https://jutrabod-backend.onrender.com/user/reset-password?token=${token}`, { password });
+      await axiosInstance.post(`/user/reset-password?token=${token}`, { password });
 
       setStatus("success");
     } catch (err) {

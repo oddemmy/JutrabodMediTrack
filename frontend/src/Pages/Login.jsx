@@ -3,7 +3,7 @@ import Input from '../ui/Input'
 import Button from '../ui/Button'
 import {useNavigate} from "react-router-dom"
 import { useState } from 'react'
-import axios from "axios"
+import axiosInstance from "../api/axiosInstance"
 import {toast} from "react-toastify" 
 
 const Login = () => {
@@ -26,7 +26,7 @@ const handleLogin = () => {
   }
 
   setLoading(true)
-  axios.post("https://jutrabod-backend.onrender.com/user/login", userDetail)
+  axiosInstance.post("/user/login", userDetail)
     .then((res) => {
   console.log(res)
   
@@ -119,7 +119,7 @@ const handleLogin = () => {
         {/* Social Login */}
           <Button
         text="Continue with Google"
-        onclick={() => window.location.href = "https://jutrabod-backend.onrender.com/user/auth/google"}
+        onclick={() => window.location.href = `${import.meta.env.VITE_API_URL || "https://jutrabod-backend.onrender.com"}/user/auth/google`}
         style="w-full bg-gray-700 hover:bg-gray-600 border border-gray-600 text-white font-semibold py-3 rounded-lg transition duration-300"
       />
         {/* Link */}

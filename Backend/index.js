@@ -26,6 +26,7 @@ const cors = require("cors")
 // middleware
 app.use(cors({origin: "*"})) 
 app.use(express.json({limit: "50mb"}))
+app.use(passport.initialize()) // Must be before routes
 app.use("/user", userrouter)
 app.use("/medications", medicationRouter)
 app.use("/health-metrics", healthMetricRouter)
@@ -34,8 +35,7 @@ app.use("/pill-tracking", pillTrackingRouter)
 app.use("/symptoms", symptomRouter)
 app.use("/user-token", userTokenRouter) 
 app.use("/drug-interactions", drugInteractionRouter)
-app.use("/family-members", familyMemberRouter) 
-app.use(passport.initialize())
+app.use("/family-members", familyMemberRouter)
 
 // Start medication reminder cron job
 startMedicationReminderJob()
@@ -47,7 +47,7 @@ startAppointmentReminderJob()  // Add this line
 startRefillReminderJob()  // Add this line
 
 connect()
-const port = 8007
+const port = process.env.PORT || 8007
 
 app.listen(port, () => {
     console.log(`App started listening at port ${port}`);

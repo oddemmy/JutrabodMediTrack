@@ -1,6 +1,6 @@
 import { useEffect, useState, useRef } from "react";
 import { useSearchParams, useNavigate } from "react-router-dom";
-import axios from "axios";
+import axiosInstance from "../api/axiosInstance";
 
 const VerifyEmail = () => {
   const [searchParams] = useSearchParams();
@@ -13,7 +13,7 @@ const VerifyEmail = () => {
     hasRun.current = true;
 
     const token = searchParams.get("token");
-   axios.get(`https://jutrabod-backend.onrender.com/user/verify-email?token=${token}`)
+   axiosInstance.get(`/user/verify-email?token=${token}`)
 
       .then(res => setStatus("success"))
       .catch(err => setStatus("error"));
