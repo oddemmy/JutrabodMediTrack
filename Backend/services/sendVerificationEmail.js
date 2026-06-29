@@ -13,8 +13,9 @@ const transporter = nodemailer.createTransport({
 const sendVerificationEmail = async (toEmail, token) => {
   const verificationUrl = `${process.env.CLIENT_URL}/verify-email?token=${token}`;
 
+  const sender = process.env.SENDER_EMAIL || process.env.EMAIL_USER || process.env.BREVO_USER;
   await transporter.sendMail({
-    from: `"Jutrabod" <${process.env.BREVO_USER}>`,
+    from: `"Jutrabod" <${sender}>`,
     to: toEmail,
     subject: "Verify your Jutrabod account",
     html: `
