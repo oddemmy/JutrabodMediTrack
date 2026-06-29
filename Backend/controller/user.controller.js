@@ -26,11 +26,16 @@ const userSignup = async(req, res) => {
             newuser.verificationTokenExpiry = Date.now() + 24 * 60 * 60 * 1000
             await newuser.save()
 
-    try {
-        await sendVerificationEmail(newuser.email, token)
-    } catch (emailError) {
-        console.log("Email sending failed:", emailError.message)
-    }
+            const verificationUrl = `${process.env.CLIENT_URL || "http://localhost:5173"}/verify-email?token=${token}`;
+            console.log("-----------------------------------------");
+            console.log("Verification Link for newly registered user:", verificationUrl);
+            console.log("-----------------------------------------");
+
+            try {
+                await sendVerificationEmail(newuser.email, token)
+            } catch (emailError) {
+                console.log("Email sending failed:", emailError.message)
+            }
 
     return res.status(200).json({message: "Signup successful. Please check your email to verify your account.", status: true})
       }      

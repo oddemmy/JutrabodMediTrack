@@ -7,13 +7,12 @@ const VerifyEmail = () => {
   const [status, setStatus] = useState("verifying");
   const navigate = useNavigate();
   const hasRun = useRef(false);
-
   useEffect(() => {
     if (hasRun.current) return;
     hasRun.current = true;
 
     const token = searchParams.get("token");
-   axiosInstance.get(`/user/verify-email?token=${token}`)
+    axiosInstance.get(`/user/verify-email?token=${token}`)
 
       .then(res => setStatus("success"))
       .catch(err => setStatus("error"));

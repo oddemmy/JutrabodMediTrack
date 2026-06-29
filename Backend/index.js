@@ -8,6 +8,7 @@ const passport = require("./services/passport")
 
 const express = require("express")
 const app = express()
+app.set("trust proxy", 1)
 
 const connect = require("./database/db.connect")
 
