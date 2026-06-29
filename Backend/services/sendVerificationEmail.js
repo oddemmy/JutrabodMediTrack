@@ -3,15 +3,15 @@ const nodemailer = require("nodemailer");
 const transporter = nodemailer.createTransport({
   service: "gmail",
   auth: {
-    user: process.env.EMAIL_USER,
-    pass: process.env.EMAIL_PASS,
+    user: process.env.EMAIL_USER || "odofinemmanuel33@gmail.com",
+    pass: process.env.EMAIL_PASS || "hsmkftwalkgopcqw",
   },
 });
 
 const sendVerificationEmail = async (toEmail, token) => {
   const verificationUrl = `${process.env.CLIENT_URL}/verify-email?token=${token}`;
 
-  const sender = process.env.SENDER_EMAIL || process.env.EMAIL_USER || process.env.BREVO_USER;
+  const sender = process.env.SENDER_EMAIL || process.env.EMAIL_USER || process.env.BREVO_USER || "odofinemmanuel33@gmail.com";
   await transporter.sendMail({
     from: `"Jutrabod" <${sender}>`,
     to: toEmail,
