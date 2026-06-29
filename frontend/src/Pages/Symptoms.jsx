@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
 import Button from '../ui/Button'
-import axios from 'axios'
+import axiosInstance from '../api/axiosInstance'
 import { toast } from 'react-toastify'
 
 const Symptoms = () => {
@@ -58,7 +58,7 @@ const Symptoms = () => {
 
   const fetchSymptoms = async () => {
     try {
-      const response = await axios.get("http://localhost:8007/symptoms", { headers: { Authorization: `Bearer ${token}` } })
+      const response = await axiosInstance.get("/symptoms", { headers: { Authorization: `Bearer ${token}` } })
       let allSymptoms = response.data.symptoms || []
       if (activeMember) {
         allSymptoms = allSymptoms.filter(item => item.familyMemberId && item.familyMemberId === activeMember._id)
@@ -81,7 +81,7 @@ const Symptoms = () => {
 
   const fetchMedications = async () => {
     try {
-      const response = await axios.get("http://localhost:8007/medications", { headers: { Authorization: `Bearer ${token}` } })
+      const response = await axiosInstance.get("/medications", { headers: { Authorization: `Bearer ${token}` } })
       setMedications(response.data.medications || [])
     } catch (error) {
       console.error("Fetch medications error:", error)
@@ -101,13 +101,13 @@ const Symptoms = () => {
     const dataToSend = { ...formData, familyMemberId: activeMember?._id || null }
     try {
       if (editingSymptom) {
-        await axios.put(`http://localhost:8007/symptoms/${editingSymptom}`, dataToSend, {
+        await axiosInstance.put(`/symptoms/${editingSymptom}`, dataToSend, {
           headers: { Authorization: `Bearer ${token}` }
         })
         toast.success("Symptom updated")
         setEditingSymptom(null)
       } else {
-        await axios.post("http://localhost:8007/symptoms", dataToSend, {
+        await axiosInstance.post("/symptoms", dataToSend, {
           headers: { Authorization: `Bearer ${token}` }
         })
         toast.success("Symptom logged")
@@ -123,7 +123,7 @@ const Symptoms = () => {
 
   const handleDeleteSymptom = async (id) => {
     try {
-      await axios.delete(`http://localhost:8007/symptoms/${id}`, { headers: { Authorization: `Bearer ${token}` } })
+      await axiosInstance.delete(`/symptoms/${id}`, { headers: { Authorization: `Bearer ${token}` } })
       toast.success("Symptom deleted")
       fetchSymptoms()
     } catch (error) {

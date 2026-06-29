@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
 import Button from '../ui/Button'
-import axios from 'axios'
+import axiosInstance from '../api/axiosInstance'
 import { toast } from 'react-toastify'
 
 const Appointments = () => {
@@ -53,9 +53,9 @@ const Appointments = () => {
   const fetchAppointments = async () => {
     try {
       const url = selectedStatus === 'all'
-        ? "http://localhost:8007/appointments"
-        : `http://localhost:8007/appointments?status=${selectedStatus}`
-      const response = await axios.get(url, { headers: { Authorization: `Bearer ${token}` } })
+        ? "/appointments"
+        : `/appointments?status=${selectedStatus}`
+      const response = await axiosInstance.get(url, { headers: { Authorization: `Bearer ${token}` } })
       let allAppointments = response.data.appointments || []
       if (activeMember) {
         allAppointments = allAppointments.filter(item => item.familyMemberId && item.familyMemberId === activeMember._id)
@@ -89,13 +89,13 @@ const Appointments = () => {
     const dataToSend = { ...formData, familyMemberId: activeMember?._id || null }
     try {
       if (editingAppointment) {
-        await axios.put(`http://localhost:8007/appointments/${editingAppointment}`, dataToSend, {
+        await axiosInstance.put(`/appointments/${editingAppointment}`, dataToSend, {
           headers: { Authorization: `Bearer ${token}` }
         })
         toast.success("Appointment updated")
         setEditingAppointment(null)
       } else {
-        await axios.post("http://localhost:8007/appointments", dataToSend, {
+        await axiosInstance.post("/appointments", dataToSend, {
           headers: { Authorization: `Bearer ${token}` }
         })
         toast.success("Appointment added")
@@ -111,7 +111,7 @@ const Appointments = () => {
 
   const handleDeleteAppointment = async (id) => {
     try {
-      await axios.delete(`http://localhost:8007/appointments/${id}`, {
+      await axiosInstance.delete(`/appointments/${id}`, {
         headers: { Authorization: `Bearer ${token}` }
       })
       toast.success("Appointment deleted")

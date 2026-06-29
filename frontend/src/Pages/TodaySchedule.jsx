@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
 import Button from '../ui/Button'
-import axios from 'axios'
+import axiosInstance from '../api/axiosInstance'
 import { toast } from 'react-toastify'
 
 const TodaySchedule = () => {
@@ -41,7 +41,7 @@ const TodaySchedule = () => {
   const fetchTodaySchedule = async () => {
     try {
       setLoading(true)
-      const response = await axios.get("http://localhost:8007/pill-tracking/today", {
+      const response = await axiosInstance.get("/pill-tracking/today", {
         headers: { Authorization: `Bearer ${token}` }
       })
       let allSchedules = response.data.schedule || []
@@ -70,8 +70,8 @@ const TodaySchedule = () => {
 
   const markAsTaken = async (medicationId, scheduledTime, status) => {
     try {
-      await axios.post(
-        "http://localhost:8007/pill-tracking",
+      await axiosInstance.post(
+        "/pill-tracking",
         { medicationId, scheduledTime, status, familyMemberId: activeMember?._id || null },
         { headers: { Authorization: `Bearer ${token}` } }
       )
@@ -85,7 +85,7 @@ const TodaySchedule = () => {
 
   const undoTracking = async (trackingId) => {
     try {
-      await axios.delete(`http://localhost:8007/pill-tracking/${trackingId}`, {
+      await axiosInstance.delete(`/pill-tracking/${trackingId}`, {
         headers: { Authorization: `Bearer ${token}` }
       })
       toast.success("Action undone")

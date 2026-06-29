@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
 import Button from '../ui/Button'
-import axios from 'axios'
+import axiosInstance from '../api/axiosInstance'
 import { toast } from 'react-toastify'
 
 const HealthMetrics = () => {
@@ -50,9 +50,9 @@ const HealthMetrics = () => {
   const fetchMetrics = async () => {
     try {
       const url = selectedType === 'all'
-        ? "http://localhost:8007/health-metrics"
-        : `http://localhost:8007/health-metrics?metricType=${selectedType}`
-      const response = await axios.get(url, { headers: { Authorization: `Bearer ${token}` } })
+        ? "/health-metrics"
+        : `/health-metrics?metricType=${selectedType}`
+      const response = await axiosInstance.get(url, { headers: { Authorization: `Bearer ${token}` } })
       let allMetrics = response.data.metrics || []
       if (activeMember) {
         allMetrics = allMetrics.filter(item => item.familyMemberId && item.familyMemberId === activeMember._id)
@@ -78,7 +78,7 @@ const HealthMetrics = () => {
     }
     const dataToSend = { ...formData, familyMemberId: activeMember?._id || null }
     try {
-      await axios.post("http://localhost:8007/health-metrics", dataToSend, {
+      await axiosInstance.post("/health-metrics", dataToSend, {
         headers: { Authorization: `Bearer ${token}` }
       })
       toast.success("Metric added")
@@ -93,7 +93,7 @@ const HealthMetrics = () => {
 
   const handleDeleteMetric = async (id) => {
     try {
-      await axios.delete(`http://localhost:8007/health-metrics/${id}`, {
+      await axiosInstance.delete(`/health-metrics/${id}`, {
         headers: { Authorization: `Bearer ${token}` }
       })
       toast.success("Metric deleted")

@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
 import Button from '../ui/Button'
-import axios from 'axios'
+import axiosInstance from '../api/axiosInstance'
 import { toast } from 'react-toastify'
 
 const DrugInteractions = () => {
@@ -23,7 +23,7 @@ const DrugInteractions = () => {
   const checkInteractions = async () => {
     try {
       setLoading(true)
-      const response = await axios.get("http://localhost:8007/drug-interactions/check", {
+      const response = await axiosInstance.get("/drug-interactions/check", {
         headers: { Authorization: `Bearer ${token}` }
       })
       setInteractions(response.data.interactions || [])

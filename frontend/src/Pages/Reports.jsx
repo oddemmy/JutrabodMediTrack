@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
-import axios from 'axios'
+import axiosInstance from '../api/axiosInstance'
 import { toast } from 'react-toastify'
 import {
   Chart as ChartJS,
@@ -46,8 +46,8 @@ const Reports = () => {
   const fetchMetrics = async () => {
     try {
       setLoading(true)
-      const response = await axios.get(
-        `http://localhost:8007/health-metrics?metricType=${selectedMetric}`,
+      const response = await axiosInstance.get(
+        `/health-metrics?metricType=${selectedMetric}`,
         {
           headers: {
             Authorization: `Bearer ${token}`

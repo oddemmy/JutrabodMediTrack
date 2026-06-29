@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
 import Button from '../ui/Button'
-import axios from 'axios'
+import axiosInstance from '../api/axiosInstance'
 import { toast } from 'react-toastify'
 
 const Medications = () => {
@@ -55,7 +55,7 @@ const Medications = () => {
 
   const fetchMedications = async () => {
     try {
-      const response = await axios.get("http://localhost:8007/medications", {
+      const response = await axiosInstance.get("/medications", {
         headers: { Authorization: `Bearer ${token}` }
       })
       let allMedications = response.data.medications || []
@@ -88,13 +88,13 @@ const Medications = () => {
     const dataToSend = { ...formData, familyMemberId: activeMember?._id || null }
     try {
       if (editingMedication) {
-        await axios.put(`http://localhost:8007/medications/${editingMedication}`, dataToSend, {
+        await axiosInstance.put(`/medications/${editingMedication}`, dataToSend, {
           headers: { Authorization: `Bearer ${token}` }
         })
         toast.success("Medication updated")
         setEditingMedication(null)
       } else {
-        await axios.post("http://localhost:8007/medications", dataToSend, {
+        await axiosInstance.post("/medications", dataToSend, {
           headers: { Authorization: `Bearer ${token}` }
         })
         toast.success("Medication added")
@@ -110,7 +110,7 @@ const Medications = () => {
 
   const handleDeleteMedication = async (id) => {
     try {
-      await axios.delete(`http://localhost:8007/medications/${id}`, {
+      await axiosInstance.delete(`/medications/${id}`, {
         headers: { Authorization: `Bearer ${token}` }
       })
       toast.success("Medication deleted")

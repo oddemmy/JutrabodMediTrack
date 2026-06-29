@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
-import axios from 'axios'
+import axiosInstance from '../api/axiosInstance'
 import { toast } from 'react-toastify'
 import { requestNotificationPermission } from '../firebase'
 import { onMessageListener } from '../firebase'
@@ -36,8 +36,8 @@ useEffect(() => {
       
       // Save token to backend
       try {
-        await axios.post(
-          "http://localhost:8007/user-token",
+        await axiosInstance.post(
+          "/user-token",
           { fcmToken: token },
           {
             headers: {
@@ -82,12 +82,12 @@ useEffect(() => {
       setLoading(true)
 
       // Fetch medications
-      const medsResponse = await axios.get("http://localhost:8007/medications", {
+      const medsResponse = await axiosInstance.get("/medications", {
         headers: { Authorization: `Bearer ${token}` }
       })
 
       // Fetch health metrics
-      const metricsResponse = await axios.get("http://localhost:8007/health-metrics", {
+      const metricsResponse = await axiosInstance.get("/health-metrics", {
         headers: { Authorization: `Bearer ${token}` }
       })
 

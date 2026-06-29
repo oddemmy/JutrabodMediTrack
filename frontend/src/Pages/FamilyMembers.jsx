@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
 import Button from '../ui/Button'
-import axios from 'axios'
+import axiosInstance from '../api/axiosInstance'
 import { toast } from 'react-toastify'
 
 const FamilyMembers = () => {
@@ -31,7 +31,7 @@ const FamilyMembers = () => {
 
   const fetchFamilyMembers = async () => {
     try {
-      const response = await axios.get("http://localhost:8007/family-members", {
+      const response = await axiosInstance.get("/family-members", {
         headers: { Authorization: `Bearer ${token}` }
       })
       setMembers(response.data.members || [])
@@ -60,13 +60,13 @@ const FamilyMembers = () => {
     }
     try {
       if (editingMember) {
-        const response = await axios.put(`http://localhost:8007/family-members/${editingMember}`, formData, {
+        const response = await axiosInstance.put(`/family-members/${editingMember}`, formData, {
           headers: { Authorization: `Bearer ${token}` }
         })
         toast.success(response.data.message)
         setEditingMember(null)
       } else {
-        const response = await axios.post("http://localhost:8007/family-members", formData, {
+        const response = await axiosInstance.post("/family-members", formData, {
           headers: { Authorization: `Bearer ${token}` }
         })
         toast.success(response.data.message)
@@ -83,7 +83,7 @@ const FamilyMembers = () => {
   const handleDeleteMember = async (id) => {
     if (!window.confirm("Are you sure you want to remove this family member?")) return
     try {
-      const response = await axios.delete(`http://localhost:8007/family-members/${id}`, {
+      const response = await axiosInstance.delete(`/family-members/${id}`, {
         headers: { Authorization: `Bearer ${token}` }
       })
       toast.success(response.data.message)
