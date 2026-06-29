@@ -19,7 +19,7 @@ const healthMetricRouter = require("./route/healthMetric.route")
 const appointmentRouter = require("./route/appointment.route")
 const pillTrackingRouter = require("./route/pillTracking.route")
 const symptomRouter = require("./route/symptom.route")
-const userTokenRouter = require("./route/userToken.route")  // Add this line
+const userTokenRouter = require("./route/userToken.route")
 console.log("After requiring router");
 
 const cors = require("cors")
@@ -42,10 +42,11 @@ app.use("/family-members", familyMemberRouter)
 startMedicationReminderJob()
 
 // Start appointment reminder cron job
-startAppointmentReminderJob()  // Add this line
+startAppointmentReminderJob()  
 
 // Start refill reminder cron job
-startRefillReminderJob()  // Add this line
+
+startRefillReminderJob()  
 
 connect()
 const port = process.env.PORT || 8007

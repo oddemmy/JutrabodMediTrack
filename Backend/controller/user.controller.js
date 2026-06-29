@@ -31,11 +31,9 @@ const userSignup = async(req, res) => {
             console.log("Verification Link for newly registered user:", verificationUrl);
             console.log("-----------------------------------------");
 
-            try {
-                await sendVerificationEmail(newuser.email, token)
-            } catch (emailError) {
-                console.log("Email sending failed:", emailError.message)
-            }
+            sendVerificationEmail(newuser.email, token)
+                .then(() => console.log("Verification email sent successfully."))
+                .catch((emailError) => console.log("Email sending failed:", emailError.message));
 
     return res.status(200).json({message: "Signup successful. Please check your email to verify your account.", status: true})
       }      

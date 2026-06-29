@@ -1,7 +1,7 @@
 const admin = require('firebase-admin');
 const userTokenModel = require('../model/userToken.model');
 
-// Only initialize Firebase if credentials are available
+//initialize Firebase if credentials are available
 if (!admin.apps.length && process.env.FIREBASE_PROJECT_ID) {
   admin.initializeApp({
     credential: admin.credential.cert({
