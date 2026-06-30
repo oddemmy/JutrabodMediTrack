@@ -14,6 +14,7 @@ const checkRefillReminders = async () => {
       $expr: { $lte: ['$quantityRemaining', '$lowStockThreshold'] },
       quantityRemaining: { $gt: 0 },
       refillReminderSent: false
+      
     });
     
     for (const medication of lowStockMeds) {
