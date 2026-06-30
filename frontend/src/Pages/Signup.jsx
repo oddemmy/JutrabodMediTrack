@@ -53,7 +53,7 @@ if (!emailRegex.test(userDetail.email)) {
       toast.success(res.data?.message)
     }).catch((err) => {
       console.log(err);
-      let errormessage = err?.response?.data?.message
+      let errormessage = err?.response?.data?.message || err.message || "Failed to connect to server"
       toast.error(errormessage)
     }).finally(() =>
       setLoading(false)
