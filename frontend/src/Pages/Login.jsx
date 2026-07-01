@@ -1,14 +1,23 @@
 import React from 'react'
 import Input from '../ui/Input'
 import Button from '../ui/Button'
-import {useNavigate} from "react-router-dom"
-import { useState } from 'react'
+import {useNavigate, useSearchParams} from "react-router-dom"
+import { useState, useEffect } from 'react'
 import axiosInstance from "../api/axiosInstance"
 import {toast} from "react-toastify" 
 
 const Login = () => {
   const navigate = useNavigate()
-const [userDetail, setUserDetail] = useState({
+  const [searchParams] = useSearchParams()
+
+  useEffect(() => {
+    const oauthError = searchParams.get("oauth_error")
+    if (oauthError) {
+      toast.error(`Google Sign-In failed: ${oauthError}`)
+    }
+  }, [])
+
+  const [userDetail, setUserDetail] = useState({
   email: "",
   password: ""
 })
