@@ -11,34 +11,45 @@ passport.use(new GoogleStrategy({
 },
 async (accessToken, refreshToken, profile, done) => {
     try {
-        // Check if user already exists
-        let user = await usermodel.findOne({ googleId: profile.id })
+        const googleEmail = profile.emails && profile.emails[0] ? profile.emails[0].value : null
+        const googleId = profile.id
+        const displayName = profile.displayName || "Google User"
 
+        console.log("Google OAuth: authenticating", googleEmail, googleId)
+
+        if (!googleEmail) {
+            return done(new Error("No email returned from Google"), null)
+        }
+
+        // Check if user already exists by googleId
+        let user = await usermodel.findOne({ googleId })
         if (user) {
+            console.log("Google OAuth: existing Google user found:", user.email)
             return done(null, user)
         }
 
-        // Check if email already exists (signed up manually before)
-        user = await usermodel.findOne({ email: profile.emails[0].value })
-
+        // Check if email already exists (signed up manually before) — link it
+        user = await usermodel.findOneAndUpdate(
+            { email: googleEmail },
+            { $set: { googleId, isVerified: true } },
+            { new: true }
+        )
         if (user) {
-            // Link google account to existing user
-            user.googleId = profile.id
-            user.isVerified = true
-            await user.save()
+            console.log("Google OAuth: linked existing email account:", user.email)
             return done(null, user)
         }
 
         // Create new user
         const newUser = await usermodel.create({
-            username: profile.displayName,
-            email: profile.emails[0].value,
-            googleId: profile.id,
+            username: displayName,
+            email: googleEmail,
+            googleId,
             isVerified: true,
         })
-
+        console.log("Google OAuth: new user created:", newUser.email)
         return done(null, newUser)
     } catch (error) {
+        console.error("Google OAuth strategy error:", error)
         return done(error, null)
     }
 }))

@@ -12,15 +12,25 @@ userrouter.get("/auth/google", passport.authenticate("google", { scope: ["profil
 
 // Google callback
 userrouter.get("/auth/google/callback",
-    passport.authenticate("google", { session: false, failureRedirect: `${process.env.CLIENT_URL}/login` }),
+    passport.authenticate("google", { session: false, failureRedirect: `${process.env.CLIENT_URL || "https://jutrabod-frontend.onrender.com"}/login` }),
     (req, res) => {
-        const token = jwt.sign(
-            { userId: req.user._id, email: req.user.email },
-            process.env.JWT_SECRET,
-            { expiresIn: "1h" }
-        )
-        // Redirect to frontend with token
-        res.redirect(`${process.env.CLIENT_URL}/oauth-success?token=${token}&username=${req.user.username}&id=${req.user._id}&email=${req.user.email}`)
+        try {
+            if (!req.user) {
+                console.error("Google OAuth callback: req.user is null")
+                return res.redirect(`${process.env.CLIENT_URL || "https://jutrabod-frontend.onrender.com"}/login`)
+            }
+            const token = jwt.sign(
+                { userId: req.user._id, email: req.user.email },
+                process.env.JWT_SECRET,
+                { expiresIn: "1h" }
+            )
+            // Redirect to frontend with token
+            const redirectUrl = `${process.env.CLIENT_URL || "https://jutrabod-frontend.onrender.com"}/oauth-success?token=${token}&username=${encodeURIComponent(req.user.username)}&id=${req.user._id}&email=${encodeURIComponent(req.user.email)}`
+            return res.redirect(redirectUrl)
+        } catch (err) {
+            console.error("Google OAuth callback error:", err)
+            return res.redirect(`${process.env.CLIENT_URL || "https://jutrabod-frontend.onrender.com"}/login`)
+        }
     }
 )
 
