@@ -11,16 +11,6 @@ const BACKEND_URL = process.env.BACKEND_URL || "https://jutrabodmeditrack.onrend
 const CLIENT_URL = process.env.CLIENT_URL || "https://jutrabod-frontend.onrender.com"
 const CALLBACK_URL = `${BACKEND_URL}/user/auth/google/callback`
 
-// Diagnostic route — check which env vars are present
-userrouter.get("/auth/google/config-check", (req, res) => {
-    res.json({
-        hasClientId: !!GOOGLE_CLIENT_ID,
-        hasClientSecret: !!GOOGLE_CLIENT_SECRET,
-        backendUrl: BACKEND_URL,
-        clientUrl: CLIENT_URL,
-        callbackUrl: CALLBACK_URL,
-    })
-})
 
 // Initiate Google login — redirect user to Google consent screen
 userrouter.get("/auth/google", (req, res) => {
