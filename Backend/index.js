@@ -27,7 +27,7 @@ const cors = require("cors")
 // middleware
 app.use(cors({origin: "*"})) 
 app.use(express.json({limit: "50mb"}))
-app.use(passport.initialize()) // Must be before routes
+app.use(passport.initialize()) // Must be before route 
 app.use("/user", userrouter)
 app.use("/medications", medicationRouter)
 app.use("/health-metrics", healthMetricRouter)

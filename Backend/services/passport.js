@@ -6,7 +6,8 @@ passport.use(new GoogleStrategy({
     clientID: process.env.GOOGLE_CLIENT_ID,
     clientSecret: process.env.GOOGLE_CLIENT_SECRET,
     callbackURL: `${process.env.BACKEND_URL || "https://jutrabodmeditrack.onrender.com"}/user/auth/google/callback`,
-    proxy: true
+    proxy: true,
+    state: false
 },
 async (accessToken, refreshToken, profile, done) => {
     try {
